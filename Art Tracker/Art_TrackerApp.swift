@@ -11,7 +11,7 @@ import SwiftUI
 struct Art_TrackerApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            LoadingView()
         }
     }
 }
