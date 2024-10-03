@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct MainView: View {
+    @StateObject var vmCollection = CollectionsViewModel()
     @State private var tabSelection = false
     var body: some View {
         ZStack {
-            Color.backIntro.ignoresSafeArea()
+            Color.mainBack.ignoresSafeArea()
             VStack {
                 if !tabSelection {
                     CollectionView()
@@ -37,7 +38,7 @@ struct MainView: View {
                         
                         //MARK: - Plus button
                         Button {
-                            
+                            vmCollection.isPresentAddEntry.toggle()
                         } label: {
                             Image(systemName: "plus.circle.fill")
                                 .resizable()
@@ -60,6 +61,9 @@ struct MainView: View {
                 .ignoresSafeArea()
                 .frame(width: .infinity, height: scaleScreen_y(55))
             }
+        }
+        .sheet(isPresented: $vmCollection.isPresentAddEntry) {
+            AddEntryView(vm: vmCollection)
         }
     }
 }

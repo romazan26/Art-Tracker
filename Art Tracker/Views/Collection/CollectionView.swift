@@ -10,7 +10,7 @@ import SwiftUI
 struct CollectionView: View {
     var body: some View {
         ZStack {
-            Color.backIntro.ignoresSafeArea()
+            Color.mainBack.ignoresSafeArea()
             VStack {
                 
                 //MARK: - User
