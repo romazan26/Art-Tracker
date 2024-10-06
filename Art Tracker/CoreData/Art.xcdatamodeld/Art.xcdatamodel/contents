@@ -7,8 +7,12 @@
         <attribute name="descript" optional="YES" attributeType="String"/>
         <attribute name="desmensions" optional="YES" attributeType="String"/>
         <attribute name="image" attributeType="Transformable" valueTransformerName="UIImageTransformer" customClassName="UIImage"/>
-        <attribute name="materials" optional="YES" attributeType="String"/>
         <attribute name="style" optional="YES" attributeType="String"/>
         <attribute name="titleWork" optional="YES" attributeType="String"/>
+        <relationship name="materials" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Material" inverseName="entry" inverseEntity="Material"/>
+    </entity>
+    <entity name="Material" representedClassName="Material" syncable="YES" codeGenerationType="class">
+        <attribute name="nameMaterial" optional="YES" attributeType="String"/>
+        <relationship name="entry" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Entry" inverseName="materials" inverseEntity="Entry"/>
     </entity>
 </model>

@@ -109,7 +109,37 @@ struct AddEntryView: View {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Materials")
                             .foregroundStyle(.gray)
-                        CustomTextFieldView(placeholder: "Text", text: $vm.simpleMaterials)
+                        HStack {
+                            CustomTextFieldView(placeholder: "Text", text: $vm.simpleMaterial)
+                            Button {
+                                vm.oneMoreMaterials()
+                            } label: {
+                                Image(systemName: "plus")
+                                    .foregroundStyle(.main)
+                            }
+
+                        }
+                        
+                        //MARK: - List new materials
+                        HStack {
+                            ForEach(vm.simplleMalerials.indices, id: \.self) { i in
+                                HStack {
+                                    Text(vm.simplleMalerials[i])
+                                    Button {
+                                        vm.simplleMalerials.remove(at: i)
+                                    } label: {
+                                        Image(systemName: "trash")
+                                            .resizable()
+                                            .frame(width: scaleScreen_x(20), height: scaleScreen_x(20))
+                                    }
+                                }
+                                .padding(10)
+                                .foregroundStyle(.white)
+                                .background {
+                                    Color.main.cornerRadius(10)
+                                }
+                            }
+                        }
                     }
                     .padding()
                     .background {
@@ -117,22 +147,47 @@ struct AddEntryView: View {
                     }
                     
                     //MARK: - Image
-                        VStack{
-                            Image(systemName: "photo.fill")
-                                .resizable()
-                                .frame(width: scaleScreen_x(32), height: scaleScreen_x(32))
-                                .foregroundStyle(.gray)
-                            Text("Add image")
-                                .foregroundStyle(.gray)
+                    
+                    HStack {
+                        //MARK: One more image button
+                        Button {
+                            vm.isPresentedPiker.toggle()
+                        } label: {
+                            VStack{
+                                Image(systemName: "photo.fill")
+                                    .resizable()
+                                    .frame(width: scaleScreen_x(32), height: scaleScreen_x(32))
+                                    .foregroundStyle(.gray)
+                                Text("Add image")
+                                    .foregroundStyle(.gray)
+                            }
+                            .frame(height: scaleScreen_y(110))
+                            .frame(maxWidth: .infinity)
+                            .background {
+                                Color.second.cornerRadius(12)
+                            }
                         }
-                        .frame(height: scaleScreen_y(110))
-                    .frame(maxWidth: .infinity)
-                    .background {
-                        Color.second.cornerRadius(12)
+                        
+                        //MARK: Image
+                        if let image = vm.simpleImage {
+                            Image(uiImage: image)
+                                .resizable()
+                                .frame(width: scaleScreen_x(110), height: scaleScreen_x(110))
+                                .aspectRatio(contentMode: .fit)
+                                .cornerRadius(12)
+                        }
                     }
+                    .sheet(isPresented: $vm.isPresentedPiker, content: {
+                        PhotoPicker(configuration: vm.config,
+                                    pickerResult: $vm.simpleImage,
+                                    isPresented: $vm.isPresentedPiker)
+                    })
+
+                       
                     
                     //MARK: - Save button
                     Button {
+                        vm.addEntry()
                         vm.isPresentAddEntry = false
                     } label: {
                         MainButtonView(text: "Save")

@@ -13,7 +13,7 @@ struct PhotoPicker: UIViewControllerRepresentable {
     
     let configuration: PHPickerConfiguration
     
-    @Binding var pickerResult: UIImage
+    @Binding var pickerResult: UIImage?
     @Binding var isPresented: Bool
     
     

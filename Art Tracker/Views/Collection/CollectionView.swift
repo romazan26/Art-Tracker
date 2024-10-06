@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct CollectionView: View {
+    @StateObject var vm: CollectionsViewModel
     var body: some View {
         ZStack {
             Color.mainBack.ignoresSafeArea()
@@ -35,7 +36,21 @@ struct CollectionView: View {
                             .foregroundStyle(.main)
                             .font(.system(size: 15))
                     }
-                    CollectionEmptyView()
+                    if vm.entrys.isEmpty{
+                        CollectionEmptyView()
+                    }else{
+                        ScrollView(.horizontal){
+                            HStack {
+                                ForEach(vm.entrys.prefix(3)) { entry in
+                                    NavigationLink {
+                                        EntryView(vm: vm, entry: entry)
+                                    } label: {
+                                        EntryCellview(entry: entry)
+                                    }                                    
+                                }
+                            }
+                        }
+                    }
                 }
                 //MARK: - Collection
                 VStack {
@@ -68,5 +83,5 @@ struct CollectionView: View {
 }
 
 #Preview {
-    CollectionView()
+    CollectionView(vm: CollectionsViewModel())
 }
