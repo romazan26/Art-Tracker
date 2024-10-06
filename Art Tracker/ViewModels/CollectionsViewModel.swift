@@ -14,6 +14,8 @@ final class CollectionsViewModel: ObservableObject {
     @Published var entrys: [Entry] = []
     @Published var materials: [Material] = []
     
+    @Published var simpleEntry: Entry?
+    
     @Published var simpleAuthor: String = ""
     @Published var simpleCategory: Category = .animation
     @Published var simpleDate: Date = Date()
@@ -29,6 +31,11 @@ final class CollectionsViewModel: ObservableObject {
     
     @Published var isPresentedPiker = false
     @Published var isPresentAddEntry = false
+    @Published var isEditMode = false
+    
+    @Published var simpleSortCategory: Category?
+    @Published var simpleSortStyle: Style?
+    @Published var sortedCollection: [Entry] = []
     
     var config: PHPickerConfiguration {
         var config = PHPickerConfiguration(photoLibrary: .shared())
@@ -41,6 +48,86 @@ final class CollectionsViewModel: ObservableObject {
     init() {
         fetchEntrys()
         fetchMaterials()
+    }
+    
+    //MARK: - Sorted collection
+    func sotedCollection(){
+        sortedCollection.removeAll()
+        var sortCategory: [Entry] = []
+        fetchEntrys()
+        
+        if simpleSortCategory != nil {
+            for entry in entrys {
+                if entry.category == simpleSortCategory?.rawValue {
+                    sortCategory.append(entry)
+                }
+            }
+        }else{
+            sortCategory = entrys
+        }
+        
+        if simpleSortStyle != nil {
+            for entry in sortCategory {
+                if entry.style == simpleSortStyle?.rawValue {
+                    sortedCollection.append(entry)
+                }
+            }
+        }else{
+            sortedCollection = sortCategory
+        }
+        
+    }
+    
+    //MARK: - Edite data
+    func fillData(entry: Entry){
+        simpleAuthor = entry.author ?? ""
+        simpleCategory  = Category(rawValue: entry.category ?? "") ?? .animation
+        simpleDate = entry.date ?? Date()
+        simpleDiscript = entry.descript ?? ""
+        simpleDesmensions = entry.desmensions ?? ""
+        simpleImage = entry.image ?? UIImage(systemName: "image")
+        simpleStyle = Style(rawValue: entry.style ?? "") ?? .artNouveau
+        simpleTitle = entry.titleWork ?? ""
+        if let materials = entry.materials?.allObjects as? [Material] {
+            countMaterials = materials.count
+            simplleMalerials = []
+            for material in materials {
+                simplleMalerials.append(material.nameMaterial ?? "")
+            }
+        }
+        isEditMode = true
+        simpleEntry = entry
+    }
+    
+    func editEntry() {
+        let request = NSFetchRequest<Entry>(entityName: "Entry")
+        do{
+            entrys = try manager.context.fetch(request)
+            if let entry = entrys.first(where: { $0.id == simpleEntry?.id }){
+                entry.author = simpleAuthor
+                entry.category = simpleCategory.rawValue
+                entry.date = simpleDate
+                entry.descript = simpleDiscript
+                entry.desmensions = simpleDesmensions
+                entry.image = simpleImage
+                entry.style = simpleStyle.rawValue
+                entry.titleWork = simpleTitle
+                if let materials = entry.materials?.allObjects as? [Material] {
+                    for material in materials {
+                        manager.context.delete(material)
+                    }
+                    saveMaterial()
+                }
+                for material in simplleMalerials  {
+                    addOneMaterial(materialName: material, entry: entry)
+                }
+            }
+        }catch let error{
+            print("error fetching entries: \(error.localizedDescription)")
+        }
+        saveEntry()
+        isEditMode.toggle()
+        clear()
     }
     
     //MARK: - Delete data

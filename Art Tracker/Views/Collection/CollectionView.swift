@@ -32,9 +32,17 @@ struct CollectionView: View {
                             .foregroundStyle(.white)
                             .font(.system(size: 22, weight: .heavy))
                         Spacer()
-                        Text("See all")
-                            .foregroundStyle(.main)
-                            .font(.system(size: 15))
+                        
+                        //MARK: - See all button
+                        NavigationLink {
+                            CollectionsSortView(vm: vm)
+                        } label: {
+                            Text("See all")
+                                .foregroundStyle(.main)
+                                .font(.system(size: 15))
+                        }
+
+                        
                     }
                     if vm.entrys.isEmpty{
                         CollectionEmptyView()
@@ -52,7 +60,7 @@ struct CollectionView: View {
                         }
                     }
                 }
-                //MARK: - Collection
+                //MARK: - Statistics
                 VStack {
                     HStack{
                         Text("Statistics")
@@ -63,7 +71,7 @@ struct CollectionView: View {
                     BudgetView(budget: 0)
                     SaleStatisticsView(sale: 0, purchases: 0)
                 }
-                //MARK: - Collection
+                //MARK: - Notes
                 VStack {
                     HStack{
                         Text("Notes")

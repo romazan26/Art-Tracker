@@ -9,6 +9,7 @@ import SwiftUI
 
 struct AddEntryView: View {
     @StateObject var vm: CollectionsViewModel
+    @Environment(\.dismiss) var dismiss
     var body: some View {
         ZStack {
             //MARK: - Background
@@ -187,8 +188,12 @@ struct AddEntryView: View {
                     
                     //MARK: - Save button
                     Button {
-                        vm.addEntry()
-                        vm.isPresentAddEntry = false
+                        if vm.isEditMode {
+                            vm.editEntry()
+                        }else {
+                            vm.addEntry()
+                        }
+                        dismiss()
                     } label: {
                         MainButtonView(text: "Save")
                     }

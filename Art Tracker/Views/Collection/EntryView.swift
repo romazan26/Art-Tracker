@@ -10,7 +10,7 @@ import SwiftUI
 struct EntryView: View {
     @StateObject var vm: CollectionsViewModel
     @Environment(\.dismiss) var dismiss
-    let entry: Entry
+    @ObservedObject var entry: Entry
     var body: some View {
         ZStack {
             
@@ -90,6 +90,15 @@ struct EntryView: View {
                 }
 
             }.padding()
+                .toolbar {
+                    ToolbarItem {
+                        NavigationLink("Edit") {
+                            AddEntryView(vm: vm).onAppear {
+                                vm.fillData(entry: entry)
+                            }
+                        }
+                    }
+                }
         }
     }
     //MARK: - Dateformatter
