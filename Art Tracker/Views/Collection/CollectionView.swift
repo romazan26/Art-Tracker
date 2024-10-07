@@ -68,8 +68,8 @@ struct CollectionView: View {
                             .font(.system(size: 22, weight: .heavy))
                         Spacer()
                     }
-                    BudgetView(budget: 0)
-                    SaleStatisticsView(sale: 0, purchases: 0)
+                    BudgetView(budget: vm.getBudget())
+                    SaleStatisticsView(sale: vm.saleEntry.count, purchases: vm.purchaseEntry.count)
                 }
                 //MARK: - Notes
                 VStack {

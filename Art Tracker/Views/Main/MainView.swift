@@ -64,6 +64,9 @@ struct MainView: View {
                     .frame(width: .infinity, height: scaleScreen_y(55))
                 }
             }
+            .onAppear(perform: {
+                vmCollection.getHistory()
+            })
             .sheet(isPresented: $vmCollection.isPresentAddEntry) {
                 AddEntryView(vm: vmCollection)
             }

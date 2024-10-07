@@ -21,4 +21,8 @@
         <attribute name="nameMaterial" optional="YES" attributeType="String"/>
         <relationship name="entry" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Entry" inverseName="materials" inverseEntity="Entry"/>
     </entity>
+    <entity name="Note" representedClassName="Note" syncable="YES" codeGenerationType="class">
+        <attribute name="descriptNote" optional="YES" attributeType="String"/>
+        <attribute name="titleNote" optional="YES" attributeType="String"/>
+    </entity>
 </model>

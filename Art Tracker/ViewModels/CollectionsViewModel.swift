@@ -39,14 +39,21 @@ final class CollectionsViewModel: ObservableObject {
     @Published var sortedCollection: [Entry] = []
     
     //MARK: History propertyes
+    @Published var arrayForSale: [Entry] = []
+    @Published var arrayForPurchase: [Entry] = []
+    
     @Published var simpleHistoryView = false
+    
     @Published var saleEntry: [Entry] = []
     @Published var purchaseEntry: [Entry] = []
+    
     @Published var simplePriceSale = ""
     @Published var simplePricePurchase = ""
     @Published var simpleDateSale: Date?
-    @Published var simpleDatePurchase: Date?
+    @Published var simpleDatePurchase = Date()
+    
     @Published var isPresentAddHistory = false
+    
     @Published var switchAddHistory = false
     
     
@@ -63,6 +70,16 @@ final class CollectionsViewModel: ObservableObject {
         fetchMaterials()
     }
     
+    //MARK: - Get budget
+    func getBudget() -> Int {
+        var budget: Int = 0
+        for entry in entrys {
+            budget += Int(entry.priceSale)
+            budget -= Int(entry.pricePurchase)
+        }
+        return budget
+    }
+    
     //MARK: - Dateformatter
     private func Dateformatter(date: Date) -> String{
         let dateFormatter = DateFormatter()
@@ -71,6 +88,72 @@ final class CollectionsViewModel: ObservableObject {
     }
     
     //MARK: - History function
+    
+    func getHistory() {
+        fetchEntrys()
+        purchaseEntry.removeAll()
+        saleEntry.removeAll()
+        for entry in entrys {
+            if entry.purchase {
+                purchaseEntry.append(entry)
+            }
+            if entry.sale {
+                saleEntry.append(entry)
+            }
+        }
+    }
+    
+    //MARK: Purchase entry
+    func saleEntryPurchase() {
+        let request = NSFetchRequest<Entry>(entityName: "Entry")
+        do{
+            entrys = try manager.context.fetch(request)
+            let entry = entrys.first(where: {$0.id == simpleEntry?.id})
+            entry?.sale = true
+            entry?.purchase = false
+            entry?.priceSale = Int64(simplePriceSale) ?? 0
+            entry?.dateSale = simpleDatePurchase
+        }catch let error{
+            print("error fetching entries: \(error.localizedDescription)")
+        }
+        saveEntry()
+        getArrayForPurchase()
+        getHistory()
+    }
+    
+    func buyEntry() {
+        let request = NSFetchRequest<Entry>(entityName: "Entry")
+        do{
+            entrys = try manager.context.fetch(request)
+            let entry = entrys.first(where: {$0.id == simpleEntry?.id})
+            entry?.purchase = true
+            entry?.pricePurchase = Int64(simplePricePurchase) ?? 0
+            entry?.datePurhase = simpleDatePurchase
+        }catch let error{
+            print("error fetching entries: \(error.localizedDescription)")
+        }
+        saveEntry()
+        getArrayForPurchase()
+        getHistory()
+    }
+    
+    //Get array for purchase
+    func getArrayForPurchase() {
+        fetchEntrys()
+        arrayForPurchase.removeAll()
+        arrayForSale.removeAll()
+        for entry in entrys {
+            if !entry.purchase {
+                arrayForPurchase.append(entry)
+            }
+        }
+        for entry in entrys {
+            if entry.purchase {
+                arrayForSale.append(entry)
+            }
+        }
+    }
+    
     // Метод для сортировки по дате (сначала новые)
     func sortSales() {
         saleEntry.sort { $0.dateSale ?? Date() > $1.dateSale ?? Date()}
@@ -86,13 +169,13 @@ final class CollectionsViewModel: ObservableObject {
     
     // Метод для сортировки по дате (сначала новые)
     func sortPurchases() {
-        purchaseEntry.sort { $0.datePurchase ?? Date() > $1.datePurchase ?? Date()}
+        purchaseEntry.sort { $0.datePurhase ?? Date() > $1.datePurhase ?? Date()}
     }
     
     // Группировка покупок по дате
     func groupedPurchasesByDate() -> [String: [Entry]] {
         let groupedDictionary = Dictionary(grouping: purchaseEntry) { purchase in
-            Dateformatter(date: purchase.datePurchase ?? Date()) // Преобразование даты в строку
+            Dateformatter(date: purchase.datePurhase ?? Date()) // Преобразование даты в строку
         }
         return groupedDictionary
     }

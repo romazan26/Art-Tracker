@@ -19,7 +19,7 @@ struct HistoryView: View {
                     Spacer()
                     //MARK: - Add Purhcase button
                     Button {
-                        vm.isPresentAddHistory = false
+                        vm.isPresentAddHistory = true
                     } label: {
                         Text("Add")
                             .foregroundStyle(.white)
@@ -47,6 +47,9 @@ struct HistoryView: View {
                 Spacer()
             }.padding()
         }
+        .onAppear(perform: {
+            vm.getHistory()
+        })
         .sheet(isPresented: $vm.isPresentAddHistory) {
             AddHistory(vm: vm)
         }

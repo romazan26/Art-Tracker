@@ -49,8 +49,9 @@ struct PurchaseFortimeView: View {
             }
             .scrollContentBackground(.hidden)
             .listStyle(InsetGroupedListStyle())
+            .frame(maxWidth: .infinity)
             
-        }
+        }.frame(maxWidth: .infinity)
         
     }
 }
