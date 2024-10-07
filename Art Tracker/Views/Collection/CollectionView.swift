@@ -9,6 +9,8 @@ import SwiftUI
 
 struct CollectionView: View {
     @StateObject var vm: CollectionsViewModel
+    @StateObject var vmNote = NoteViewModel()
+    @StateObject var vmUser = UserViewModel()
     var body: some View {
         ZStack {
             Color.mainBack.ignoresSafeArea()
@@ -17,12 +19,18 @@ struct CollectionView: View {
                 //MARK: - User
                 HStack {
                     Spacer()
-                    Text("Mr. Alex")
+                    Text(vmUser.userName)
                         .font(.system(size: 22, weight: .heavy))
                         .foregroundStyle(.white)
-                    Image(.userTest)
-                        .resizable()
-                        .frame(width: scaleScreen_x(40), height: scaleScreen_x(40))
+                    Button {
+                        vmUser.isPresentUser = true
+                    } label: {
+                        Image(.userTest)
+                            .resizable()
+                            .frame(width: scaleScreen_x(40), height: scaleScreen_x(40))
+                    }
+
+                    
                 }
                 
                 //MARK: - Collection
@@ -78,14 +86,33 @@ struct CollectionView: View {
                             .foregroundStyle(.white)
                             .font(.system(size: 22, weight: .heavy))
                         Spacer()
-                        Text("See all")
-                            .foregroundStyle(.main)
-                            .font(.system(size: 15))
+                        NavigationLink {
+                            NotesView(vm: vmNote)
+                        } label: {
+                            Text("See all")
+                                .foregroundStyle(.main)
+                                .font(.system(size: 15))
+                        }
                     }
-                    CollectionEmptyView()
+                    if vmNote.notes.isEmpty{
+                        CollectionEmptyView()
+                    }else{
+                        ScrollView(.horizontal) {
+                            HStack{
+                                ForEach(vmNote.notes) { note in
+                                    NoteCellView(note: note)
+                                }
+                            }
+                        }
+                    }
+                    
                 }
                 Spacer()
             }.padding()
+        }
+        .sheet(isPresented: $vmUser.isPresentUser) {
+            UserView(vm: vmUser)
+                .presentationDetents([.fraction(0.5)])
         }
     }
 }

@@ -99,6 +99,8 @@ struct EntryView: View {
                         }
                     }
                 }
+        }.onDisappear {
+            vm.clear()
         }
     }
     //MARK: - Dateformatter

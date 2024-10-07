@@ -30,10 +30,10 @@ struct MainView: View {
                             Button {
                                 tabSelection = false
                             } label: {
-                                Image(systemName: "text.document.fill")
+                                Image(systemName: "photo.artframe.circle")
                                     .resizable()
                                     .foregroundStyle(tabSelection ? .gray : .main)
-                                    .frame(width: scaleScreen_x(24), height: scaleScreen_x(30))
+                                    .frame(width: scaleScreen_x(30), height: scaleScreen_x(30))
                             }
                             Spacer()
                             

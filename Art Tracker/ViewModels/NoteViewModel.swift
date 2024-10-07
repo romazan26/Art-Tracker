@@ -16,9 +16,16 @@ final class NoteViewModel: ObservableObject {
     @Published var simpleTitleNote: String = ""
     @Published var simpleDescriptionNote: String = ""
     @Published var isAddNote: Bool = false
+    @Published var isEdit = false
     
     init(){
         getNote()
+    }
+    
+    //MARK: - Delete data
+    func deleteNote(note: Note){
+        manager.context.delete(note)
+        saveNote()
     }
     
     //MARK: - Edit data
@@ -35,6 +42,7 @@ final class NoteViewModel: ObservableObject {
         saveNote()
         clear()
         isAddNote.toggle()
+        isEdit = false
     }
     
     //MARK: - Fill data
