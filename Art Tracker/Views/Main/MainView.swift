@@ -18,7 +18,7 @@ struct MainView: View {
                     if !tabSelection {
                         CollectionView(vm: vmCollection)
                     }else{
-                        HistoryView()
+                        HistoryView(vm: vmCollection)
                     }
                     Spacer()
                     //MARK: - bottom tool bar

@@ -33,9 +33,22 @@ final class CollectionsViewModel: ObservableObject {
     @Published var isPresentAddEntry = false
     @Published var isEditMode = false
     
+    //MARK: Sorted propertyes
     @Published var simpleSortCategory: Category?
     @Published var simpleSortStyle: Style?
     @Published var sortedCollection: [Entry] = []
+    
+    //MARK: History propertyes
+    @Published var simpleHistoryView = false
+    @Published var saleEntry: [Entry] = []
+    @Published var purchaseEntry: [Entry] = []
+    @Published var simplePriceSale = ""
+    @Published var simplePricePurchase = ""
+    @Published var simpleDateSale: Date?
+    @Published var simpleDatePurchase: Date?
+    @Published var isPresentAddHistory = false
+    @Published var switchAddHistory = false
+    
     
     var config: PHPickerConfiguration {
         var config = PHPickerConfiguration(photoLibrary: .shared())
@@ -48,6 +61,40 @@ final class CollectionsViewModel: ObservableObject {
     init() {
         fetchEntrys()
         fetchMaterials()
+    }
+    
+    //MARK: - Dateformatter
+    private func Dateformatter(date: Date) -> String{
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "d.M.yyyy"
+        return dateFormatter.string(from: date)
+    }
+    
+    //MARK: - History function
+    // Метод для сортировки по дате (сначала новые)
+    func sortSales() {
+        saleEntry.sort { $0.dateSale ?? Date() > $1.dateSale ?? Date()}
+    }
+    
+    // Группировка покупок по дате
+    func groupedSalesByDate() -> [String: [Entry]] {
+        let groupedDictionary = Dictionary(grouping: saleEntry) { sale in
+            Dateformatter(date: sale.dateSale ?? Date()) // Преобразование даты в строку
+        }
+        return groupedDictionary
+    }
+    
+    // Метод для сортировки по дате (сначала новые)
+    func sortPurchases() {
+        purchaseEntry.sort { $0.datePurchase ?? Date() > $1.datePurchase ?? Date()}
+    }
+    
+    // Группировка покупок по дате
+    func groupedPurchasesByDate() -> [String: [Entry]] {
+        let groupedDictionary = Dictionary(grouping: purchaseEntry) { purchase in
+            Dateformatter(date: purchase.datePurchase ?? Date()) // Преобразование даты в строку
+        }
+        return groupedDictionary
     }
     
     //MARK: - Sorted collection

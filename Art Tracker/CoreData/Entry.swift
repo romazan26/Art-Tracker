@@ -27,6 +27,14 @@ public class Entry: NSManagedObject {
     @NSManaged public var style: String?
     @NSManaged public var titleWork: String?
     @NSManaged public var materials: NSSet?
+    @NSManaged public var sale: Bool
+    @NSManaged public var purchase: Bool
+    @NSManaged public var dateSale: Date?
+    @NSManaged public var datePurchase: Date?
+    @NSManaged public var priceSale: Int64
+    @NSManaged public var pricePurchase: Int64
+    
+    
 
 }
 
